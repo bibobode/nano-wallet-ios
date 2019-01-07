@@ -274,13 +274,13 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		2991C63A21E2D38200F856F8 /* Deprecation */ = {
+		2991C63A21E2D38200F856F8 /* Banner */ = {
 			isa = PBXGroup;
 			children = (
 				2991C63B21E2D3B100F856F8 /* BannerViewController.swift */,
 				2991C63D21E2D50B00F856F8 /* BannerView.swift */,
 			);
-			path = Deprecation;
+			path = Banner;
 			sourceTree = "<group>";
 		};
 		51203A3B1FE1ECF700CD7D79 /* Models */ = {
@@ -479,7 +479,7 @@
 				5125E4491FD1FE8A004DB451 /* JSON Responses */,
 				51FE1F971FC605C9009F045F /* AppDelegate.swift */,
 				5174E8F7200FA6BC00DE86A0 /* Services */,
-				2991C63A21E2D38200F856F8 /* Deprecation */,
+				2991C63A21E2D38200F856F8 /* Banner */,
 				51A520601FE430BD003F6EC7 /* New User Experience */,
 				5125E4541FD21C5D004DB451 /* HomeViewController */,
 				51E945D21FF6EC45006B7081 /* ReceiveViewController */,

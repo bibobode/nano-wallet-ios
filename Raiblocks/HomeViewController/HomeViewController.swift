@@ -24,6 +24,7 @@ class HomeViewController: UIViewController {
     // MARK: - UI Elements
 
     private let bannerViewController = BannerViewController(nibName: nil, bundle: nil)
+    private var bannerHeightConstraint: NSLayoutConstraint? = nil
     
     private weak var pricePageViewController: PricePageViewController?
     private weak var pageControl: UIPageControl?
@@ -194,14 +195,7 @@ class HomeViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         self.refreshControl = refreshControl
 
-        addChildViewController(bannerViewController)
-        view.addSubview(bannerViewController.view)
-        bannerViewController.didMove(toParentViewController: self)
-        constrain(bannerViewController.view, topSection) {
-            $0.width == $0.superview!.width
-            $0.top == $1.bottom
-            $0.height == CGFloat(90)
-        }
+        setupBannerViewController(in: topSection)
         
         let tableView = UITableView()
         tableView.refreshControl = refreshControl
@@ -233,6 +227,11 @@ class HomeViewController: UIViewController {
                 showAnalyticsAlert()
             }
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateBannerConstraints()
     }
 
     override func didReceiveMemoryWarning() {
@@ -460,4 +459,39 @@ extension HomeViewController: LegalViewControllerDelegate {
         showAnalyticsAlert()
     }
 
+}
+
+private extension HomeViewController {
+    
+    func setupBannerViewController(in topSection: UIView) {
+        addChildViewController(bannerViewController)
+        view.addSubview(bannerViewController.view)
+        bannerViewController.didMove(toParentViewController: self)
+        
+        constrain(bannerViewController.view, topSection) {
+            $0.width == $0.superview!.width
+            $0.top == $1.bottom
+            bannerHeightConstraint = $0.height == 0
+        }
+        
+        bannerViewController.linkTapActionHandler = { [weak self] (url) in
+            let webViewController = WebViewController(url: url, useForLegalPurposes: false)
+            self?.present(webViewController, animated: true, completion: nil)
+        }
+        
+        bannerViewController.minimizeActionHandler = { [weak self] (minimized) in
+            guard let strongSelf = self else { return }
+            strongSelf.updateBannerConstraints()
+        }
+    }
+    
+    func updateBannerConstraints() {
+        let bannerHeight: CGFloat = bannerViewController.bannerView.textView.contentSize.height
+        view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.25, animations: { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.bannerHeightConstraint?.constant = bannerHeight
+            strongSelf.view.layoutIfNeeded()
+        })
+    }
 }

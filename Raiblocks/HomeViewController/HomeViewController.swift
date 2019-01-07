@@ -104,6 +104,11 @@ class HomeViewController: UIViewController {
             viewModel.socket.open()
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsEvent.bannerViewed.track()
+    }
 
     override func viewDidLoad() {
         defer { viewModel.fetchLatestPrices() }
@@ -475,11 +480,18 @@ private extension HomeViewController {
         }
         
         bannerViewController.linkTapActionHandler = { [weak self] (url) in
+            AnalyticsEvent.bannerLinkTapped.track()
+            
+            guard let strongSelf = self else { return }
             let webViewController = WebViewController(url: url, useForLegalPurposes: false)
-            self?.present(webViewController, animated: true, completion: nil)
+            strongSelf.present(webViewController, animated: true, completion: nil)
         }
         
         bannerViewController.minimizeActionHandler = { [weak self] (minimized) in
+            if minimized == true {
+                AnalyticsEvent.bannerMinimized.track()
+            }
+            
             guard let strongSelf = self else { return }
             strongSelf.updateBannerConstraints()
         }

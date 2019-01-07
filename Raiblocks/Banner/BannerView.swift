@@ -24,7 +24,7 @@ class BannerView: UIView {
     
     private let button = UIButton(type: .custom)
     
-    private(set) var minimized: Bool = false {
+    var minimized: Bool = false {
         didSet {
             update(for: minimized)
         }

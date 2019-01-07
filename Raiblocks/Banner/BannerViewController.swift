@@ -24,7 +24,7 @@ class BannerViewController: UIViewController {
         didSet {
             bannerView.minimizeActionHandler = { [weak self] (minimized) in
                 guard let strongSelf = self else { return }
-                strongSelf.updateText(for: minimized)
+                strongSelf.update(for: minimized)
                 strongSelf.minimizeActionHandler?(minimized)
             }
         }
@@ -49,6 +49,23 @@ class BannerViewController: UIViewController {
 
 private extension BannerViewController {
     
+    func setup() {
+        setupConstraints()
+        bannerView.minimized = UserDefaults.standard.bool(forKey: persistanceMinimizedKey)
+        update(for: bannerView.minimized)
+    }
+    
+    func setupConstraints() {
+        view.addSubview(bannerView)
+        constrain(bannerView) {
+            $0.width == $0.superview!.width
+            $0.height == $0.superview!.height
+        }
+    }
+}
+
+private extension BannerViewController {
+    
     var url: URL {
         return URL(string: "https://www.medium.com/nano")!
     }
@@ -61,22 +78,15 @@ private extension BannerViewController {
         return "This is a test banner."
     }
     
-    func setup() {
-        setupConstraints()
-        updateText(for: bannerView.minimized)
+    var persistanceMinimizedKey: String {
+        return "BannerViewController.minimized"
     }
     
-    func setupConstraints() {
-        view.addSubview(bannerView)
-        constrain(bannerView) {
-            $0.width == $0.superview!.width
-            $0.height == $0.superview!.height
-        }
-    }
-    
-    func updateText(for minimized: Bool) {
+    func update(for minimized: Bool) {
         bannerView.textView.layer.addFadeTransition()
         bannerView.textView.text = minimized ? minimizedBannerViewText : bannerViewText
+        UserDefaults.standard.set(minimized, forKey: persistanceMinimizedKey)
+        UserDefaults.standard.synchronize()
     }
 }
 

@@ -35,12 +35,12 @@ private extension BannerViewController {
     }
     
     func setup() {
-        view.addSubview(bannerView)
         setupConstraints()
         bannerView.text = bannerViewText
     }
     
     func setupConstraints() {
+        view.addSubview(bannerView)
         constrain(bannerView) {
             $0.width == $0.superview!.width
             $0.height == $0.superview!.height

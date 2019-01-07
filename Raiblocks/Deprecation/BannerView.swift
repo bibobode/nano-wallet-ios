@@ -13,11 +13,11 @@ class BannerView: UIView {
     
     var text: String = "" {
         didSet {
-            set(text: text, for: textView)
+            textView.text = text
         }
     }
     
-    let textView = UITextView(frame: .zero)
+    private let textView = UITextView(frame: .zero)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,6 +37,7 @@ private extension BannerView {
     }
     
     func setupConstraints() {
+        addSubview(textView)
         constrain(textView) {
             $0.width == $0.superview!.width
             $0.height == $0.superview!.height
@@ -44,30 +45,15 @@ private extension BannerView {
     }
     
     func setup(textView: UITextView) {
-        let padding: CGFloat = 10
-        textView.contentInset = UIEdgeInsetsMake(padding, padding, padding, padding)
+        textView.textContainerInset = UIEdgeInsetsMake(12, 12, 12, 12)
         textView.dataDetectorTypes = [.link]
         textView.textAlignment = .left
         textView.isUserInteractionEnabled = false
         textView.isEditable = false
+        textView.backgroundColor = Styleguide.Colors.lime.color
+        textView.font = Styleguide.Fonts.nunitoRegular.font(ofSize: 16)
+        textView.textColor = Styleguide.Colors.darkBlue.color
         textView.isSelectable = true
         textView.isScrollEnabled = true
-    }
-}
-
-private extension BannerView {
-    
-    func set(text: String, for textView: UITextView) {
-        let attributedText = NSMutableAttributedString(string: text)
-        attributedText.addAttribute(.foregroundColor,
-                                    value: Styleguide.Colors.darkBlue.color,
-                                    range: NSMakeRange(0, attributedText.length))
-        attributedText.addAttribute(.font,
-                                    value: Styleguide.Fonts.nunitoRegular.font(ofSize: 16),
-                                    range: NSMakeRange(0, attributedText.length))
-        //        attributedText.addAttribute(.foregroundColor, value: Styleguide.Colors.red.color, range: NSMakeRange(192, 119)) // Middle sentence "We do not have access..."
-        //        attributedText.addAttribute(.foregroundColor, value: Styleguide.Colors.red.color, range: NSMakeRange(attributedText.length - 42, 42)) // last sentence "Never give it..."
-        
-        textView.attributedText = attributedText
     }
 }

@@ -23,6 +23,8 @@ class HomeViewController: UIViewController {
 
     // MARK: - UI Elements
 
+    private let bannerViewController = BannerViewController(nibName: nil, bundle: nil)
+    
     private weak var pricePageViewController: PricePageViewController?
     private weak var pageControl: UIPageControl?
     private weak var refreshControl: UIRefreshControl?
@@ -192,6 +194,15 @@ class HomeViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         self.refreshControl = refreshControl
 
+        addChildViewController(bannerViewController)
+        view.addSubview(bannerViewController.view)
+        bannerViewController.didMove(toParentViewController: self)
+        constrain(bannerViewController.view, topSection) {
+            $0.width == $0.superview!.width
+            $0.top == $1.bottom
+            $0.height == CGFloat(90)
+        }
+        
         let tableView = UITableView()
         tableView.refreshControl = refreshControl
         tableView.backgroundColor = .white
@@ -199,13 +210,13 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         view.addSubview(tableView)
-        constrain(tableView, sendButton, topSection) {
+        constrain(tableView, sendButton, bannerViewController.view) {
             $0.top == $2.bottom
             $0.width == $0.superview!.width
             $0.bottom == $1.top - CGFloat(33)
         }
         self.tableView = tableView
-
+        
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         if !appDelegate.devConfig.skipLegal {
             if !viewModel.hasCompletedLegalAgreements {

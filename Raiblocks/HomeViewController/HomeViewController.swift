@@ -479,8 +479,8 @@ private extension HomeViewController {
             bannerHeightConstraint = $0.height == 0
         }
         
-        bannerViewController.linkTapActionHandler = { [weak self] (url) in
-            AnalyticsEvent.bannerLinkTapped.track()
+        bannerViewController.actionHandler = { [weak self] (url) in
+            AnalyticsEvent.bannerActionButtonTapped.track()
             
             guard let strongSelf = self else { return }
             let webViewController = WebViewController(url: url, useForLegalPurposes: false)
@@ -498,7 +498,13 @@ private extension HomeViewController {
     }
     
     func updateBannerConstraints() {
-        let bannerHeight: CGFloat = bannerViewController.bannerView.textView.contentSize.height
+        let bannerView = bannerViewController.bannerView
+        let padding: CGFloat = 10
+        
+        let buttonHeight: CGFloat = bannerView.actionButton.sizeThatFits(bannerView.bounds.size).height
+        let textViewHeight: CGFloat = bannerView.textView.contentSize.height
+        let bannerHeight = textViewHeight + buttonHeight + padding
+        
         view.layoutIfNeeded()
         UIView.animate(withDuration: 0.25, animations: { [weak self] in
             guard let strongSelf = self else { return }

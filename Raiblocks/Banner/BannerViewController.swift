@@ -11,11 +11,11 @@ import Cartography
 
 class BannerViewController: UIViewController {
     
-    var linkTapActionHandler: ((URL)->())? = nil {
+    var actionHandler: ((URL)->())? = nil {
         didSet {
-            bannerView.linkTapActionHandler = { [weak self] in
+            bannerView.actionHandler = { [weak self] in
                 guard let strongSelf = self else { return }
-                strongSelf.linkTapActionHandler?(strongSelf.url)
+                strongSelf.actionHandler?(strongSelf.url)
             }
         }
     }
@@ -51,7 +51,8 @@ private extension BannerViewController {
     
     func setup() {
         setupConstraints()
-        bannerView.minimized = UserDefaults.standard.bool(forKey: persistanceMinimizedKey)
+        bannerView.actionButton.setAttributedTitle(bannerViewButtonText, withKerning: 1)
+        bannerView.minimized = UserDefaults.standard.bool(forKey: persistenceMinimizedKey)
         update(for: bannerView.minimized)
     }
     
@@ -71,21 +72,25 @@ private extension BannerViewController {
     }
     
     var bannerViewText: String {
-        return "This is a test banner. It looks pretty awesome! \nPlease see \(url) for details."
+        return "This is a test banner. It looks pretty awesome!"
     }
     
     var minimizedBannerViewText: String {
         return "This is a test banner."
     }
     
-    var persistanceMinimizedKey: String {
+    var bannerViewButtonText: String {
+        return "View Announcement"
+    }
+    
+    var persistenceMinimizedKey: String {
         return "BannerViewController.minimized"
     }
     
     func update(for minimized: Bool) {
         bannerView.textView.layer.addFadeTransition()
         bannerView.textView.text = minimized ? minimizedBannerViewText : bannerViewText
-        UserDefaults.standard.set(minimized, forKey: persistanceMinimizedKey)
+        UserDefaults.standard.set(minimized, forKey: persistenceMinimizedKey)
         UserDefaults.standard.synchronize()
     }
 }

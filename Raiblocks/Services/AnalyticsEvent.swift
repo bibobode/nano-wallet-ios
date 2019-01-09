@@ -45,7 +45,7 @@ enum AnalyticsEvent: String {
 
     // Banner
     case bannerViewed = "Banner Viewed"
-    case bannerLinkTapped = "Banner Link Tapped"
+    case bannerActionButtonTapped = "Banner Action Button Tapped"
     case bannerMinimized = "Banner Minimized"
 
     // Legal
